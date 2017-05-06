@@ -8,8 +8,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by LaunchCode
@@ -42,8 +45,10 @@ public class JobData {
                 values.add(aValue);
             }
         }
-
-        return values;
+        // copy of ArrayList
+        ArrayList<String> values2 = new ArrayList<String>(values);  
+        Collections.sort(values2);
+        return values2;
     }
 
     public static ArrayList<HashMap<String, String>> findAll() {
@@ -73,15 +78,43 @@ public class JobData {
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
         for (HashMap<String, String> row : allJobs) {
-
+        	// added toLowerCase to deal with case issue
             String aValue = row.get(column);
-
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value)) {
                 jobs.add(row);
             }
         }
-
         return jobs;
+    }
+    
+    // find by string
+    @SuppressWarnings("rawtypes")
+	public static ArrayList<HashMap<String, String>> findByValue(String str) {
+    	
+    	 // load data, if not already loaded
+        loadData();
+        
+
+    	ArrayList<HashMap<String, String>> jobs = allJobs;
+    	ArrayList<HashMap<String, String>> wantedJobs = new ArrayList<>();
+    	
+    	 for (int i = 0; i < jobs.size(); i++) {
+     		Collection col = jobs.get(i).values();
+     		Set keys = jobs.get(i).keySet();
+     		Object[] columns = col.toArray();
+     		Object[] keyNames = keys.toArray();
+     		
+     		for (int j = 0; j < columns.length; j++){
+     			if (keyNames[j].toString().toLowerCase().contains(str)) {
+     				wantedJobs.add(jobs.get(i));
+     			}
+     			else if (columns[j].toString().toLowerCase().contains(str)) {
+     				wantedJobs.add(jobs.get(i));
+     			}
+     			
+     		}
+     	}
+    	return wantedJobs;
     }
 
     /**

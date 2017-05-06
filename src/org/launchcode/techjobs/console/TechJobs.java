@@ -1,8 +1,13 @@
 package org.launchcode.techjobs.console;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Created by LaunchCode
@@ -55,13 +60,14 @@ public class TechJobs {
 
                 // How does the user want to search (e.g. by skill or employer)
                 String searchField = getUserSelection("Search by:", columnChoices);
+                
 
                 // What is their search term?
                 System.out.println("\nSearch term: ");
                 String searchTerm = in.nextLine();
 
                 if (searchField.equals("all")) {
-                    System.out.println("Search all fields not yet implemented.");
+                	printJobs(JobData.findByValue(searchTerm));
                 } else {
                     printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
                 }
@@ -109,8 +115,26 @@ public class TechJobs {
     }
 
     // Print a list of jobs
-    private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
+    @SuppressWarnings("rawtypes") /* added this to suppress the annoying raw type message */
+	private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
+    	if (someJobs.size() == 0) {
+    		System.out.printf("\nThere are no current listings\n\n");
+    	}
+    	else {
+    		for (int i = 0; i < someJobs.size(); i++) {
+        		Collection col = someJobs.get(i).values();
+        		Set keys = someJobs.get(i).keySet();
 
-        System.out.println("printJobs is not implemented yet");
+        		Object[] columns = col.toArray();
+        		Object[] keyNames = keys.toArray();
+        		System.out.println("*****");
+        		for (int j = 0; j < columns.length; j++){
+        			System.out.printf("%s: %s\n", keyNames[j], columns[j]);
+        		}
+        		System.out.println("*****\n");
+        	}
+    	}
+    	
+        
     }
 }
